@@ -5,7 +5,7 @@ function App() {
   return (
     <Wrapper>
       <Box>
-        <span>🎃</span>
+        <Emoji as='p'>🎃</Emoji>
       </Box>
     </Wrapper>
   );
@@ -16,14 +16,6 @@ const Wrapper = styled.div`
 `;
 
 const rotationAnimation = keyframes`
-  /* from {
-    transform: rotate(0deg);
-    border-radius: 0px;
-  }
-  to {
-    transform:rotate(360deg);
-    border-radius:100px;
-  } */
 0% {
   transform:rotate(0deg);
   border-radius:0px;
@@ -48,14 +40,14 @@ const Box = styled.div`
   align-items:center;
 
   // Box컴포넌트 내부에 있는 span태그 selector
-  span {
-    font-size:36px;
-    &:hover {
-      // span을 hover했을때
+  //만약 html태그명에 의존하고 싶지 않을때, styled-components를 타겟팅
+  ${Emoji}:hover {
+      font-size:98px;
     }
-    &:active {
-      // span가 active되었을때
-      // 마우스를 클릭하면 active 클릭하지 않은상태면 active하지 않음
-    }
-  }
 `;
+
+const Emoji = styled.span`
+  font-size:36px;
+`
+
+export default App;
