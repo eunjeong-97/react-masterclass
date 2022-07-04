@@ -11,11 +11,13 @@ function App() {
   );
 }
 
+
 const Wrapper = styled.div`
   display:flex;
 `;
 
-const rotationAnimation = keyframes`
+// 다른파일에서도 rotationAnimation 애니메이션 사용가능
+export const rotationAnimation = keyframes`
 0% {
   transform:rotate(0deg);
   border-radius:0px;
@@ -39,11 +41,14 @@ const Box = styled.div`
   justify-content:center;
   align-items:center;
 
-  // Box컴포넌트 내부에 있는 span태그 selector
-  //만약 html태그명에 의존하고 싶지 않을때, styled-components를 타겟팅
   ${Emoji}:hover {
       font-size:98px;
     }
+`;
+
+// extends: 컴포넌트의 모든 요소를 유지하면서 새로운 코드 추가
+const Circle = styled(Box)`
+  border-radius:50%;
 `;
 
 const Emoji = styled.span`
