@@ -10,13 +10,22 @@ function App() {
     </Wrapper>
   );
 }
-
+// 다크모드를 구현할때 theme과 local estate management이 필요한데
+// 오늘은 theme을 배워본다
+// theme은 기본적으로 모든 색상들을 가지고 있는 object이라 유용하게 쓸 수 있다
+// 색상을 바꾸고 싶을때 object를 바꾸면 된다
 
 const Wrapper = styled.div`
   display:flex;
+/* Wrapper나 Title은 어떤 theme의 backgroundColor인지 신경을 쓰지 않는다 */
+/* ThemeProvider 안에 있는 theme object의 property만 가져오기만 한다 */
+  background-color: ${props => props.theme.backgroundColor}
 `;
 
-// 다른파일에서도 rotationAnimation 애니메이션 사용가능
+const Title = styled.h1`
+color: ${props => props.theme.textColor}
+`
+
 export const rotationAnimation = keyframes`
 0% {
   transform:rotate(0deg);
@@ -46,7 +55,6 @@ const Box = styled.div`
     }
 `;
 
-// extends: 컴포넌트의 모든 요소를 유지하면서 새로운 코드 추가
 const Circle = styled(Box)`
   border-radius:50%;
 `;
