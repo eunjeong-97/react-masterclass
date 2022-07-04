@@ -61,38 +61,26 @@ const Emoji = styled.span`
 export default App;
 
 /*
-TypeScript는 JavaScript를 기반으로 한 프로그래밍 언어이다
-TypeScript는 자바스크립트 복붙이지만 새로운 기능 추가된거
-function이나 array, method 만드는 등등 동일함
-기존의 코드를 고칠 필요는 없다
+타입스크립트로 리액트 프로젝트를 하려면
+nix create-reac-app —template typescript
+이전처럼 styled-components 설치하고 theme 설정해야 함
 
-Strongly-typed: 프로그래밍 언어가 작동하기 전에 data의 type을 확인한다
+이렇게 처음부터 하기 싫으면 타입스크립트를 설치해주면 된다
+그리고 파일확장자를 .tsx로 변경하고 실행하면
+리액트 라이브러리가 타입스크립트를 확인한다
 
-const plus = (a,b) => a+b;
-plus(2,2); // 4
-plus(2, ‘hi’); // ‘2hi’
+타입스크립트는 styled-components를 알지 못한다
+props가 뭔지 몰라서 에러를 발생시킨다
 
-이러한 실수를 막기 위해 자바스크립트에게 a,b는 언제나 number라고 알려주고 싶다
-즉, 코드에 실수가 있어도 프로그램이 작동하기 전에 Typescript가 나에게 알려준다
+어떤 라이브러리나 패키지는 자바스크립트로 만들어졌기때문에 타입스크립트가 알지못한다
+타입스크립트로 만들지 않은 라이브러리를 import할 땐, 타입스크립트를 위한 버전을 추가로 npm i해주면 된다 (tip을 확인해보자)
 
-const user = {
-  firstName: ‘Angela’,
-  lastName: ‘Davis’,
-  role: ‘Professor’,
-};
-console.log(user.name); // undefined
+@types/styled-components
 
-TypeScript이라면 user.name은 존재하지 않는다고 말해준다
-이럴 때 자바스크립트가 error를 내주면 좋겠지만 undefined만 낸다
+@types는 모든 유명한 nom 라이브러리 패키지를 가지고 있다
+라이브러리나 패키지의 type definition을 알려준다
 
-const plus = (a:number, b:number) => a+ b;
-plus(1,1);  // 2
-plus(‘a’, 1); // 빨간줄로 에러줄
-
-이런식으로 TypeScript는 작은 실수로부터 막아줌
-
-브라우저가 이해할 수 있는 유일한 프로그래밍언어는 타입스크립트
-브라우저는 타입스크립트를 이해하지 못한다
-사용자에게 publish할 때 컴파일할 때 자바스크립트가 된다
-타입에 별 문제가 없으면 자바스크립트로 컴파일해서 실행
+type definition은 styled-components의 소스코드를 보고 타입스크립트에게 해 줄 설명을 만들어 내는것이다
+즉, definitionTyped 커뮤니티를 이용해서 패키지가 어떤 정보를 가지고 있는지 타입스크립트에게 알려주는건데
+@type/ 명령어가 작동되지 않는다면 다른 방법으로 해야 한다
 */
