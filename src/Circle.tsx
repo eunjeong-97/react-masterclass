@@ -1,8 +1,9 @@
+import React, { useState } from "react";
 import styled from "styled-components";
 
 interface ContainerProps {
   bgColor: string;
-  borderColor: string; // required
+  borderColor: string;
 }
 
 const Container = styled.div<ContainerProps>`
@@ -10,26 +11,29 @@ const Container = styled.div<ContainerProps>`
   height: 200px;
   background-color: ${(props) => props.bgColor};
   border-radius: 50%;
-  /* borderColor값이 required이기 때문에 스타일에서 꼭 사용해줘야 한다 */
   border: 1px solid ${(props) => props.borderColor};
 `;
 
-// default props vs optional props 차이
-// 만약 App.tsx에서 <Circle />이라고 입력하면 bgColor가 필요한데 입력하지 않았다고 경고문구를 보여준다
-// borderColor는 property명 뒤에 ?를 추가함으로써 optional으로 설정할 수 있다 (string || undefined)
 interface CircleProps {
   bgColor: string;
-  borderColor?: string; // optional
-  // borderColor?: string | undefined; // 다른방법
-  text?: string; //옵션으로 지정하면 defauly Value 지정가능(?)
+  borderColor?: string;
+  text?: string;
 }
 
 function Circle({ bgColor, borderColor, text = "Default Value" }: CircleProps) {
-  // CircleProps에서는 borderColor를 optional로 설정하고
-  // ContainerProps에서는 borderColor를 required로 설정하면
-  // string || undefined로 받을 수 잇기 때문에 TypeScript가 경고해준다
-  // 따라서 undefined로 받았을때도 default값을 전달할 수 있도록 초기값을 TypeScript에게 알려주면 된다
-  // 만약 borderColor가 잇다면 borderColor값으로 넘겨주고, undefined로 받아서 없다면 borderColor값을 bgColor로 넘겨주면 된다
+  // 만약 아래와 같이 초기값을 지정하면 TypeScript는 counter의 타입은 number, setCounter는 number타입의 counter의 상태를 변화시키는 함수라는걸 알아차린다
+  // 대부분 우리가 state를 만들때 type을 바꾸지 않기 때문에 좋다
+  // const [counter, setCounter] = useState(1);
+  // 즉, setCounter를 사용할땐 number데이터를 보낼거란걸 안다 그래서 만약 숫자나 문자열을 사용할것같다면
+  // setCounter("hello"); 경고문구
+
+  // 만약 counter의 타입을 string이나 number로 사용한다면 아래와 같이 적을 수도 있다
+  const [counter, setCounter] = useState<number | string>(0);
+  setCounter(2);
+  setCounter("hello");
+  setCounter(true); // 경고문구
+  // 그래서 위처럼 특별하게 커스터마이징하지 않는 이상 state의 타입은 따로 지정하지 않고 초기값만 지정해주면 된다
+  // 만약 default값을 넣어주지 않으면 counter, setCounter 모두 undefined가 된다
   return (
     <Container bgColor={bgColor} borderColor={borderColor ?? bgColor}>
       {text}
