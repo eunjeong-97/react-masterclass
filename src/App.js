@@ -10,19 +10,14 @@ function App() {
     </Wrapper>
   );
 }
-// 다크모드를 구현할때 theme과 local estate management이 필요한데
-// 오늘은 theme을 배워본다
-// theme은 기본적으로 모든 색상들을 가지고 있는 object이라 유용하게 쓸 수 있다
-// 색상을 바꾸고 싶을때 object를 바꾸면 된다
 
 const Wrapper = styled.div`
   display:flex;
-/* Wrapper나 Title은 어떤 theme의 backgroundColor인지 신경을 쓰지 않는다 */
-/* ThemeProvider 안에 있는 theme object의 property만 가져오기만 한다 */
   background-color: ${props => props.theme.backgroundColor}
 `;
 
 const Title = styled.h1`
+/* texttColor라고 적어도 에러를 발생하지 않고 작동을 안하는 경우도 잇는데 TypeScript의 도움을 받으면 에러생성가능*/
 color: ${props => props.theme.textColor}
 `
 
@@ -64,3 +59,40 @@ const Emoji = styled.span`
 `
 
 export default App;
+
+/*
+TypeScript는 JavaScript를 기반으로 한 프로그래밍 언어이다
+TypeScript는 자바스크립트 복붙이지만 새로운 기능 추가된거
+function이나 array, method 만드는 등등 동일함
+기존의 코드를 고칠 필요는 없다
+
+Strongly-typed: 프로그래밍 언어가 작동하기 전에 data의 type을 확인한다
+
+const plus = (a,b) => a+b;
+plus(2,2); // 4
+plus(2, ‘hi’); // ‘2hi’
+
+이러한 실수를 막기 위해 자바스크립트에게 a,b는 언제나 number라고 알려주고 싶다
+즉, 코드에 실수가 있어도 프로그램이 작동하기 전에 Typescript가 나에게 알려준다
+
+const user = {
+  firstName: ‘Angela’,
+  lastName: ‘Davis’,
+  role: ‘Professor’,
+};
+console.log(user.name); // undefined
+
+TypeScript이라면 user.name은 존재하지 않는다고 말해준다
+이럴 때 자바스크립트가 error를 내주면 좋겠지만 undefined만 낸다
+
+const plus = (a:number, b:number) => a+ b;
+plus(1,1);  // 2
+plus(‘a’, 1); // 빨간줄로 에러줄
+
+이런식으로 TypeScript는 작은 실수로부터 막아줌
+
+브라우저가 이해할 수 있는 유일한 프로그래밍언어는 타입스크립트
+브라우저는 타입스크립트를 이해하지 못한다
+사용자에게 publish할 때 컴파일할 때 자바스크립트가 된다
+타입에 별 문제가 없으면 자바스크립트로 컴파일해서 실행
+*/
