@@ -18,6 +18,3 @@ function Router() {
 }
 
 export default Router;
-
-// path에 /:coinId라고 적으면 라우터에게 우리의 URL이 변수값을 가진다고 말하는 것이다
-// 그리고 우리는 이러한 coinId값을 잡아내면 된다
