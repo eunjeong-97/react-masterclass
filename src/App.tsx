@@ -56,7 +56,7 @@ table {
 }
 a {
   text-decoration:none;
-  color:inherit; // 부모로부터 받은 값 사용
+  color:inherit;
 }
 * {
   box-sizing:border-box;
@@ -73,5 +73,3 @@ function App() {
 }
 
 export default App;
-
-// reset css를 프로젝트 전체에서 적용시키기 위해
