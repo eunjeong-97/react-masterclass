@@ -56,6 +56,7 @@ table {
 }
 a {
   text-decoration:none;
+  color:inherit; // 부모로부터 받은 값 사용
 }
 * {
   box-sizing:border-box;
