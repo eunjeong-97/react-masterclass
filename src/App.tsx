@@ -1,19 +1,22 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-
-const Container = styled.div`
-  background-color: ${(props) => props.theme.bgColor};
-`;
-const H1 = styled.h1`
-  color: ${(props) => props.theme.textColor};
-`;
+import React from "react";
+import Router from "./Router";
 
 function App() {
-  return (
-    <Container>
-      <H1>Hello</H1>
-    </Container>
-  );
+  return <Router />;
 }
 
 export default App;
+
+// coinpaprika api
+// react query: 편리한 방식으로 데이터를 fetch할 수 있다
+// 리액트 쿼리를 하기 전에 직접 fetch를 하면서 왜 리액트쿼리를 쓰는지 알아보자
+
+/*
+/: All coins
+/:id /btc coin detail
+nested router: 중첩된 라우터
+한스크린 내에서 또다른 라우터를 가질 수 있다
+
+/btc/information
+/btc/chart
+*/
