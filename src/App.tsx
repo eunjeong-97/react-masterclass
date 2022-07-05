@@ -65,9 +65,6 @@ a {
 
 function App() {
   return (
-    // 최종적으로는 하나의 태그만 return되도록 해야되는데 여러 컴포넌트들을 감싸기 위해 <div>태그로 감싸게 되면
-    // 결국 div태그들이 많아지기 때문에 ReactJS에서는 일종의 유령 컴포넌트인  Fragment를 제공한다
-    // 이러한 Fragment는 부모태그없이 서로 붙어있는 많은 것들을 return할 수있게 해준다
     <>
       <GlobalStyle />
       <Router />

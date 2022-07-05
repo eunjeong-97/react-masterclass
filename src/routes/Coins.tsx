@@ -1,8 +1,11 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 const Container = styled.div`
   padding: 0px 20px;
+  max-width: 480px;
+  margin: 0 auto;
 `;
 
 const Header = styled.li`
@@ -25,74 +28,112 @@ const Coin = styled.li`
   margin-bottom: 10px;
   border-radius: 15px;
   a {
-    // Link태그를 hover하면 색상이 변경되는데 이때 0.2초동안 서서히 바뀌는 애니메이션을 적용시킨다
     transition: color 0.2s ease-in;
-    display: block; // 글씨 바깥~박스내부 영역을 클릭해도 페이지이동이 되도록 block으로 변경
-    padding: 20px; // 패딩영역을 Link영역에 넣으면 글씨까지 진입하지 않아도 hover된걸로 인식이 되면서 유저에게 더 편한 환경을 제공할 수 있다
+    display: block;
+    padding: 20px;
   }
   &:hover {
-    // 실제 코드에서는 a태그를 사용하지는 않고 Link 컴포넌트를 사용했지만
-    // react-router-dom의 Link컴포넌트들이 결국에는 anchor로 바뀌면서
-    // react-router-dom이 우리 대신 설정을 도와줄 이벤트리스너도 있다
-    // 즉 여기서 a태그는 Link태그를 말한다
     a {
       color: ${(props) => props.theme.accentColor};
     }
   }
 `;
 
-const coins = [
-  {
-    id: "hex-hex",
-    name: "HEX",
-    symbol: "HEX",
-    rank: 3,
-    is_new: false,
-    is_active: true,
-    type: "token",
-  },
-  {
-    id: "hex-hex",
-    name: "HEX",
-    symbol: "HEX",
-    rank: 3,
-    is_new: false,
-    is_active: true,
-    type: "token",
-  },
-  {
-    id: "hex-hex",
-    name: "HEX",
-    symbol: "HEX",
-    rank: 3,
-    is_new: false,
-    is_active: true,
-    type: "token",
-  },
-];
+const Loader = styled.span`
+  text-align: center;
+  display: block;
+`;
+
+// const coins = [
+//   {
+//     id: "hex-hex",
+//     name: "HEX",
+//     symbol: "HEX",
+//     rank: 3,
+//     is_new: false,
+//     is_active: true,
+//     type: "token",
+//   },
+//   {
+//     id: "hex-hex",
+//     name: "HEX",
+//     symbol: "HEX",
+//     rank: 3,
+//     is_new: false,
+//     is_active: true,
+//     type: "token",
+//   },
+//   {
+//     id: "hex-hex",
+//     name: "HEX",
+//     symbol: "HEX",
+//     rank: 3,
+//     is_new: false,
+//     is_active: true,
+//     type: "token",
+//   },
+// ];
+
+// fetch해서 받을 coins데이터가 어떻게 생겼는지 타입스크립트에게 알려줘야 하기 때문에
+// coins의 interface를 만들어줄 것이다
+interface CoinInterface {
+  id: string;
+  name: string;
+  symbol: string;
+  rank: number;
+  is_new: boolean;
+  is_active: boolean;
+  type: string;
+}
 
 function Coins() {
+  // 이상태에서는 타입스크립트가 coins에 id나 name속성이 있는지 알지못한다
+  // 그래서 타입스크립트에게 우리의 coins state는 coins로 이루어진 array라고 알려주면 된다
+  const [coins, setCoins] = useState<CoinInterface[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // 특정한 상황에서만 함수가 실행되게 하기 위해서는 useEffect를 사용한다
+  // useEffect함수를 사용하면, 컴포넌트가 시작될때 실행할지 컴포넌트가 끝날때 사용할지 아니면 뭐든 변화가 일어날때마다 실행할지 선택할 수 있다
+
+  // 처음에만 실행되도록 설정
+  // async await을 활용하면서 새로운 함수를 만들기 싫을때
+  // 그 자리에서 바로 함수를 실행할 수 있는 방법
+  // (() => console.log(1))();
+  useEffect(() => {
+    (async () => {
+      const res = await fetch("https://api.coinpaprika.com/v1/coins");
+      const json = await res.json();
+      console.log(json); // 9000개의 데이터가 있는데 이 중에서 100개만 가져오고 싶을때
+      /*
+      const array = [1,2,3,4,5];
+      a.slice(0,2); // [1,2]
+      */
+      setCoins(json.slice(0, 100));
+      setLoading(false);
+    })();
+  }, []);
+
   return (
     <Container>
       <Header>
         <Title>코인</Title>
       </Header>
-      <CoinsList>
-        {coins.map((coin) => (
-          // a href를 하면 페이지가 새로고침되기 때문에 사용하지 않을것이다
-          // 대신에 react-router-dom의 Link 컴포너트를 사용할거다
-          <Coin key={coin.id}>
-            <Link to={`/${coin.id}`}>{coin.name} &rarr;</Link>
-          </Coin>
-        ))}
-      </CoinsList>
+      {loading ? (
+        <Loader>"Loading..."</Loader>
+      ) : (
+        <CoinsList>
+          {coins.map((coin) => (
+            <Coin key={coin.id}>
+              <Link to={`/${coin.id}`}>{coin.name} &rarr;</Link>
+            </Coin>
+          ))}
+        </CoinsList>
+      )}
     </Container>
   );
 }
 export default Coins;
 
-/*
-일단 모든 screen들의 스타일을 한꺼번에 하지는 않을거지만
-component없이 prototype하는 것을 먼저 보여줄 것이다
-
-*/
+// 코인상세페이지에 갔다가 다시 오면 로딩화면이 다시 나오게 되는데
+// 이는 screen이 바뀔때 state가 사라지고 couns screen에서 coin 상세페이지에 갈때도 state가 사라진다
+// 즉, 유저가 다시 돌아올때마다 API를 다시 fetch해야 하는 상황인것이다
