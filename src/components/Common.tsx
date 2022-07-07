@@ -15,26 +15,25 @@ export const Header = styled.li`
 
 export const Title = styled.h1`
   font-size: 48px;
-  color: ${(props) => props.theme.accentColor};
+  color: ${(props) => props.theme.blue.normal};
 `;
 
 export const CoinsList = styled.ul``;
 
 export const Coin = styled.li`
   background-color: white;
-  color: ${(props) => props.theme.bgColor};
+  color: ${(props) => props.theme.blue.light};
   margin-bottom: 10px;
   border-radius: 15px;
   a {
     display: flex;
     align-items: center;
     transition: color 0.2s ease-in;
-    display: block;
     padding: 20px;
   }
   &:hover {
     a {
-      color: ${(props) => props.theme.accentColor};
+      color: ${(props) => props.theme.purple};
     }
   }
 `;

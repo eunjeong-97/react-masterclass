@@ -6,6 +6,7 @@ function Router() {
   return (
     <BrowserRouter>
       <Switch>
+        {/* / path를 위로 하면작동되지 않는다 */}
         <Route path="/:coinId">
           <Coin />
         </Route>

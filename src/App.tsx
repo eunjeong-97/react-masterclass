@@ -7,7 +7,6 @@ import Router from "./Router";
 // styled-components는 document의 head로 가서 GlobalStyle의 내용을 주입시켜줄 것이다
 
 const GlobalStyle = createGlobalStyle`
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -35,9 +34,9 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
-  font-family: 'Source Sans Pro', sans-serif;
-  background-color: ${(props) => props.theme.bgColor};
-  color: ${(props) => props.theme.textColor};
+	font-family: 'Do Hyeon', sans-serif;
+	background-color: ${(props) => props.theme.gray.dark};
+  color: ${(props) => props.theme.gray.light};
 }
 ol, ul {
 	list-style: none;

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
+import styled from "styled-components";
 
 import { Container, Header, Title, Loader } from "../components/Common";
 
@@ -66,13 +67,68 @@ interface PriceData {
   };
 }
 
+interface IOverView {
+  margin?: {
+    right?: string;
+    left?: string;
+  };
+  position: {
+    left?: number;
+    right?: number;
+  };
+}
+
+interface IOverViewItem {
+  title: string;
+  expl: any;
+  position: {
+    left?: number;
+    right?: number;
+  };
+}
+
+const OverViewWrap = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  background-color: ${(props) => props.theme.purple};
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  padding: 10px;
+`;
+
+const OverView = styled.div<IOverView>`
+  flex: 1;
+  position: absolute;
+  left: ${(props) => `${props.position.left}px`};
+  right: ${(props) => `${props.position.right}px`};
+  p {
+    text-align: center;
+    &:last-child {
+      color: ${(props) => props.theme.blue.dark};
+    }
+  }
+`;
+
+const Expl = styled.p`
+  margin: 20px 0;
+`;
+
+const OverViewItem = ({ title, expl, position }: IOverViewItem) => {
+  return (
+    <OverView position={position}>
+      <p>{title}</p>
+      <p>{expl === true ? "YES" : expl}</p>
+    </OverView>
+  );
+};
+
 function Coin() {
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
-
   const [loading, setLoading] = useState(true);
-
-  // InfoData, PriceData타입이라고 알려줬기 때문에 초기값을 {}이라고 지정하지 않아도 된다
   const [info, setInfo] = useState<InfoData>();
   const [price, setPrice] = useState<PriceData>();
 
@@ -82,34 +138,40 @@ function Coin() {
       const priceData = await (await fetch(`https://api.coinpaprika.com/v1/ticker/${coinId}`)).json();
       setInfo(infoData);
       setPrice(priceData);
-
-      // 콘솔창에서 우클릭하면 store object as global variable 선택을 하면 object data가 temp1에 저장된다
-      // 우리가 각각의 데이터가 필요하게 되면 temp1, temp2에 접근해서 사용하면 된다
-      console.log(infoData);
       console.log(priceData);
+      setLoading(false);
     })();
-  }, []);
+    // 내 코드의 경우 발생하지는 않지만, 니꼬의 VSCODE에서는 의존성을 잃어버렸다는 식의 경고문구를 보여줬다
+    // 그래서 useEffect에서 변수로 사용되는 coinId를 의존성배열에 추가해주면 해결됨
+
+    // 코드를 한번만 실행하고 싶을때에는 no dependencies로 설정하는데
+    // hooks는 최선의 성능을 위해서 hook 안에서 사용되는거라면 dependencies에 넣어야된다고 한다
+    // coinId는 해당 path에 진입했을때 한번 바뀌기 때문에 동일하게 작동될것이다
+  }, [coinId]);
 
   return (
     <Container>
       <Header>
         <Title>{state?.name || "Loading"}</Title>
       </Header>
-      {loading ? <Loader>"Loading..."</Loader> : null}
+      {loading ? (
+        <Loader>"Loading..."</Loader>
+      ) : (
+        <>
+          <OverViewWrap>
+            <OverViewItem title="RANK" expl={info?.rank} position={{ left: 10 }} />
+            <OverViewItem title="SYMBOL" expl={info?.symbol} position={{ left: 195 }} />
+            <OverViewItem title="OPEN SOURCE:" expl={info?.open_source} position={{ right: 10 }} />
+          </OverViewWrap>
+          <Expl>{info?.description}</Expl>
+          <OverViewWrap>
+            <OverViewItem title="HASH ALGORITHM" expl={info?.hash_algorithm} position={{ left: 10 }} />
+            <OverViewItem title="LAST DATA AT:" expl={info?.last_data_at.substring(0, 10)} position={{ right: 10 }} />
+          </OverViewWrap>
+          <Expl>{info?.description}</Expl>
+        </>
+      )}
     </Container>
   );
 }
 export default Coin;
-
-/*
-API에서 받은 data의 타입지정을 좀더 편하게 하는법
-1. API에서 받은 aata를 콘솔로그 해서 콘솔에서 확인한다
-2. store object as global variable선택해서 temp1, temp2 식으로 저장되는걸 확인한다
-3. API에서 받은 data의 인터페이스를 만든다
-4. 콘솔창에서 Object.keys(temp1).join() 하면 string으로 나오는데 복사해서
-5. 3번에서 만든 interface에 붙여넣고 , → :; 으로 변경 (command(ctrl) D로 쉼표선택)
-6. 다시 콘솔창으로 돌아와서 Object.values(temp1).map(v=>typeof v).join() 해서 나온 하나의 string을 복사해서 코드에 붙여넣기
-7. interface에 돌아와서 command(ctrl) shift L 누르고 커서나 나오면 붙여넣기
-
-무엇이던 array타입이면 어떤 타입의 데이터로 구성된 array인지 타입스크립트에게 알려줘야한다
-*/
