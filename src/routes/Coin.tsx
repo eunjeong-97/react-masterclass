@@ -211,7 +211,7 @@ function Coin() {
               <Price price={Math.round(price)} />
             </Route>
             <Route path={`/:coinId/chart`}>
-              <Chart price={123} />
+              <Chart price={123} coinId={coinId} />
             </Route>
           </Switch>
         </>
@@ -222,14 +222,13 @@ function Coin() {
 export default Coin;
 
 /*
-react query가 쩌는 이유
-1. reqct query는 fetcher함수를 만들 수 있게 해준다
-  - react query는 기본적으로 fetcher함수와 연결시켜서 함수가 불렸는지의 여부를 isLoading값으로 전달해준다
-  - 그리고 함수가 끝났을대는 결과값을 data에 넣어서 쉽게 접근할 수 있게 해준다
-2. react query는 아주 강력한 cashing(캐싱) 매커니즘을 가지고 있다
-  - 만약 내 query의 고유한 key값을 react query에 넘겨주었다면 reqct query는 유저에게 Loading을 다시는 보여주지 말라고 한다
-  - react query는 캐시에 어떤 데이터가 있는지 알기 때문에 가능하다
-3. react query는 ReactQueryDevtools 라는걸 가지고 있다
-  - 어떤 queryKey를 가진 데이터가 캐싱되어있는지 보여주고
-  - 결과가 무엇인지 보여주고 data explorer도 보여준다
- */
+Chart 컴포넌트는 우리가 보고자 하는가격의 암호화폐가 무엇인지 알아야 한다
+1. react-router-dom에서 useParams() hook를 활용할텐데 Chart버튼을 눌러서 Chart탭상태일때만 확인이 가능하다
+(Chant내부에서 useParams()를 사용하는것이기 때문에)
+만약 암호화폐를 보기 위해 Coin페이지에 와서 Chart를 누르지 않았다면 확인할 수 없다
+2. router로부터 parameter가져온다
+
+생각해보면 Coin페이지는 Chart 컴포넌트를 render하는 것이고
+Coin페이지는 URL로부터 이미 coinId값을 알 수 잇다
+그래서 Coin에서 확인하고 props로 전달해줄 것이다
+*/
