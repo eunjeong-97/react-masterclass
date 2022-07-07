@@ -3,6 +3,6 @@ interface IPriceProps {
 }
 
 function Chart({ price }: IPriceProps) {
-  return <h1>{price}</h1>;
+  return <h1>Chart: {price}</h1>;
 }
 export default Chart;

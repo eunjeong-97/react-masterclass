@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation, useParams, Switch, Route } from "react-router-dom";
+import { useLocation, useParams, Switch, Route, Link, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 
 import { Container, Header, Title, Loader } from "../components/Common";
@@ -119,6 +119,29 @@ const Expl = styled.p`
   margin: 20px 0;
 `;
 
+const TabWrap = styled.div`
+  // grid를 활용해서도 만들어보자
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 40px;
+`;
+
+interface ITab {
+  width?: number;
+  isActive: boolean;
+}
+const Tab = styled(Link)<ITab>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  width: ${(props) => props.width}px;
+  padding: 10px;
+  background-color: ${(props) => (props.isActive ? props.theme.blue.light : props.theme.blue.dark)};
+  color: ${(props) => props.theme.gray.dark};
+`;
+
 const OverViewItem = ({ title, expl, position }: IOverViewItem) => {
   return (
     <OverView position={position}>
@@ -135,6 +158,8 @@ function Coin() {
   const [info, setInfo] = useState<InfoData>();
   const [priceData, setPriceData] = useState<PriceData>();
   const [price, setPrice] = useState(0);
+  const priceMatch = useRouteMatch("/:coinId/price");
+  const chartMatch = useRouteMatch("/:coinId/chart");
 
   useEffect(() => {
     (async () => {
@@ -172,11 +197,21 @@ function Coin() {
             <OverViewItem title="LAST DATA AT:" expl={info?.last_data_at.substring(0, 10)} position={{ right: 10 }} />
           </OverViewWrap>
           <Expl>현재 시세: {Math.round(price)} USD</Expl>
+
+          <TabWrap>
+            <Tab to={`/${coinId}/price`} width={190} isActive={priceMatch !== null}>
+              PRICE
+            </Tab>
+            <Tab to={`/${coinId}/chart`} width={190} isActive={chartMatch !== null}>
+              CHART
+            </Tab>
+          </TabWrap>
+
           <Switch>
-            <Route path={`/${coinId}/price`}>
+            <Route path={`/:coinId/price`}>
               <Price price={123} />
             </Route>
-            <Route path={`/${coinId}/chart`}>
+            <Route path={`/:coinId/chart`}>
               <Chart price={123} />
             </Route>
           </Switch>
@@ -188,7 +223,15 @@ function Coin() {
 export default Coin;
 
 /*
-nested router: route 안에 있는 또 다른 route
-스크린 안에 많은 섹션이 나눠져있거나 브라우저에서 탭관리를 할때 유용하다
-/btc-bitcoin/price, /btc-bitcoin/chart 이런식으로 URL을 활용해서 탭 활성화
+nested router를 사용하기 때문에 onClick을 가진 버튼을 만드는것보단
+URL을 바꿔주는 링크만 잇으면 된다
+Link를 눌러서 URL이 변경되지만 전체페이지가 변경되는것이 아니라
+Switch에서 path에 따라 보여지는 컴포넌틍영역만 다르게 보인다
+
+우리가 어떻게 유저와 소통할지 배운다
+우리가 지금 잇는 곳의 URL에 대한 정보를 줘야할텐데 즉, 지금 현재 유저가 어느 탭에 있는지 알려줌으로써 유저와 소통하면 된다: useRouteMatch hook을 활용하면 된다
+
+useRouteMatch: 내가 특정한 URL에 있는지의 여부를 알려준다
+해당 URL에 있으면 {isExact:true}의 object를 받고, 해당 URL에 있지 않으면 null값을 받는다
+
 */
