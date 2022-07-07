@@ -211,7 +211,7 @@ function Coin() {
               <Price price={Math.round(price)} />
             </Route>
             <Route path={`/:coinId/chart`}>
-              <Chart price={123} coinId={coinId} />
+              <Chart coinId={coinId} />
             </Route>
           </Switch>
         </>
