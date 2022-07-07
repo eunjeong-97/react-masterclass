@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, Switch, Route } from "react-router-dom";
 import styled from "styled-components";
 
 import { Container, Header, Title, Loader } from "../components/Common";
+import Price from "../components/Price";
+import Chart from "../components/Chart";
 
 interface RouteParams {
   coinId: string;
@@ -44,6 +46,7 @@ interface PriceData {
   beta_value: number;
   first_data_at: string;
   last_updated: string;
+  price_usd: number;
   quotes: {
     USD: {
       ath_date: string;
@@ -130,24 +133,24 @@ function Coin() {
   const { state } = useLocation<RouteState>();
   const [loading, setLoading] = useState(true);
   const [info, setInfo] = useState<InfoData>();
-  const [price, setPrice] = useState<PriceData>();
+  const [priceData, setPriceData] = useState<PriceData>();
+  const [price, setPrice] = useState(0);
 
   useEffect(() => {
     (async () => {
       const infoData = await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
-      const priceData = await (await fetch(`https://api.coinpaprika.com/v1/ticker/${coinId}`)).json();
+      const coinData = await (await fetch(`https://api.coinpaprika.com/v1/ticker/${coinId}`)).json();
       setInfo(infoData);
-      setPrice(priceData);
-      console.log(priceData);
+      setPriceData(coinData);
       setLoading(false);
     })();
-    // 내 코드의 경우 발생하지는 않지만, 니꼬의 VSCODE에서는 의존성을 잃어버렸다는 식의 경고문구를 보여줬다
-    // 그래서 useEffect에서 변수로 사용되는 coinId를 의존성배열에 추가해주면 해결됨
-
-    // 코드를 한번만 실행하고 싶을때에는 no dependencies로 설정하는데
-    // hooks는 최선의 성능을 위해서 hook 안에서 사용되는거라면 dependencies에 넣어야된다고 한다
-    // coinId는 해당 path에 진입했을때 한번 바뀌기 때문에 동일하게 작동될것이다
   }, [coinId]);
+
+  useEffect(() => {
+    if (priceData) {
+      setPrice(priceData.price_usd);
+    }
+  }, [priceData]);
 
   return (
     <Container>
@@ -168,10 +171,24 @@ function Coin() {
             <OverViewItem title="HASH ALGORITHM" expl={info?.hash_algorithm} position={{ left: 10 }} />
             <OverViewItem title="LAST DATA AT:" expl={info?.last_data_at.substring(0, 10)} position={{ right: 10 }} />
           </OverViewWrap>
-          <Expl>{info?.description}</Expl>
+          <Expl>현재 시세: {Math.round(price)} USD</Expl>
+          <Switch>
+            <Route path={`/${coinId}/price`}>
+              <Price price={123} />
+            </Route>
+            <Route path={`/${coinId}/chart`}>
+              <Chart price={123} />
+            </Route>
+          </Switch>
         </>
       )}
     </Container>
   );
 }
 export default Coin;
+
+/*
+nested router: route 안에 있는 또 다른 route
+스크린 안에 많은 섹션이 나눠져있거나 브라우저에서 탭관리를 할때 유용하다
+/btc-bitcoin/price, /btc-bitcoin/chart 이런식으로 URL을 활용해서 탭 활성화
+*/
