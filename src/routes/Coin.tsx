@@ -3,7 +3,7 @@ import { useLocation, useParams, Switch, Route, Link, useRouteMatch } from "reac
 import { useQuery } from "react-query";
 import styled from "styled-components";
 
-import { fetchCoins } from "../modules/api";
+import { fetchCoinInfo, fetchCoinTickers } from "../modules/api";
 
 import { Container, Header, Title, Loader } from "../components/Common";
 import Price from "../components/Price";
@@ -158,30 +158,37 @@ const OverViewItem = ({ title, expl, position }: IOverViewItem) => {
 function Coin() {
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
-  const [loading, setLoading] = useState(true);
-  const [info, setInfo] = useState<InfoData>();
-  const [priceData, setPriceData] = useState<PriceData>();
+  // const [loading, setLoading] = useState(true);
+  // const [info, setInfo] = useState<InfoData>();
+  // const [priceData, setPriceData] = useState<PriceData>();
   const [price, setPrice] = useState(0);
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
 
-  useEffect(() => {
-    (async () => {
-      // 기본적으로 fetch를 하는 함수이기 때문에 react query 관점에서 fetcher함수이다
-      // fetcher함수는 무조건 fetch promise를 return해줘야 한다
-      const infoData = await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
-      const coinData = await (await fetch(`https://api.coinpaprika.com/v1/ticker/${coinId}`)).json();
-      setInfo(infoData);
-      setPriceData(coinData);
-      setLoading(false);
-    })();
-  }, [coinId]);
+  // useEffect(() => {
+  //   (async () => {
+  //     const infoData = await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
+  //     const coinData = await (await fetch(`https://api.coinpaprika.com/v1/ticker/${coinId}`)).json();
+  //     setInfo(infoData);
+  //     setPriceData(coinData);
+  //     setLoading(false);
+  //   })();
+  // }, [coinId]);
+
+  // 이렇게 만들면 queryKey가 동일해지기 때문에 좋지 않다
+  // 하지만 devtools를 보면 react query가 queryKey를 array로 보는걸 알 수있기 때문에 배열형태로 key를 정해준다
+  // isLoading과 data도 동일한 이름이면 곤란하기 때문에 구조분해할당 rename을 활용해서 아래와 같이 활용한다
+  // 그리고 useQuery hook으로 받는 데이터의 타입을 알려주기 위해 interface도 해준다
+  const { isLoading: infoLoading, data: info } = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId));
+  const { isLoading: tickerLoading, data: ticker } = useQuery<PriceData>(["ticker", coinId], () => fetchCoinTickers(coinId));
 
   useEffect(() => {
-    if (priceData) {
-      setPrice(priceData.price_usd);
+    if (ticker) {
+      setPrice(ticker.price_usd);
     }
-  }, [priceData]);
+  }, [ticker]);
+
+  const loading = infoLoading || tickerLoading;
 
   return (
     <Container>
@@ -233,11 +240,6 @@ function Coin() {
 export default Coin;
 
 /*
-react query를 사용하면 useState들이랑 await, json()부분을 없애도 된다
-index에서 ThemeProvider로 감싸서 ThemeProvider 안에 있는 모든 것이 theme으로 접근가능
-마찬가지로 react query도 queryClientProvider 안에 있는 모든 것은 queryClient에 접근이 가능하다 
-
-데이터를 위한 state, 로딩을 위한 state
-데이터가 준비도면 우리는 데이터를 state에 집어넣고 로딩을 false로 두었지만 react query는 이 모든 과정을 자동으로 해준다
-
+react query는 API로부터 response를 받고 그러한 응답을 캐싱한다
+우리가 다른페이지에 갔다가 재진입 하더라도 캐싱되어잇기 때문에 API에 다시 호출하지 않는다
 */
