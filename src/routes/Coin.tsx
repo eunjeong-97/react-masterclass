@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useLocation, useParams, Switch, Route, Link, useRouteMatch } from "react-router-dom";
+import { useQuery } from "react-query";
 import styled from "styled-components";
+
+import { fetchCoins } from "../modules/api";
 
 import { Container, Header, Title, Loader } from "../components/Common";
 import Price from "../components/Price";
@@ -90,6 +93,11 @@ interface IOverViewItem {
   };
 }
 
+interface ITab {
+  width?: number;
+  isActive: boolean;
+}
+
 const OverViewWrap = styled.div`
   display: flex;
   align-items: center;
@@ -127,11 +135,7 @@ const TabWrap = styled.div`
   margin-bottom: 40px;
 `;
 
-interface ITab {
-  width?: number;
-  isActive: boolean;
-}
-const Tab = styled(Link)<ITab>`
+const Tab = styled.div<ITab>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -163,6 +167,8 @@ function Coin() {
 
   useEffect(() => {
     (async () => {
+      // 기본적으로 fetch를 하는 함수이기 때문에 react query 관점에서 fetcher함수이다
+      // fetcher함수는 무조건 fetch promise를 return해줘야 한다
       const infoData = await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
       const coinData = await (await fetch(`https://api.coinpaprika.com/v1/ticker/${coinId}`)).json();
       setInfo(infoData);
@@ -199,12 +205,16 @@ function Coin() {
           <Expl>현재 시세: {Math.round(price)} USD</Expl>
 
           <TabWrap>
-            <Tab to={`/${coinId}/price`} width={190} isActive={priceMatch !== null}>
-              PRICE
-            </Tab>
-            <Tab to={`/${coinId}/chart`} width={190} isActive={chartMatch !== null}>
-              CHART
-            </Tab>
+            <Link to={`/${coinId}/price`}>
+              <Tab width={190} isActive={priceMatch !== null}>
+                PRICE
+              </Tab>
+            </Link>
+            <Link to={`/${coinId}/chart`}>
+              <Tab width={190} isActive={chartMatch !== null}>
+                CHART
+              </Tab>
+            </Link>
           </TabWrap>
 
           <Switch>
@@ -223,15 +233,11 @@ function Coin() {
 export default Coin;
 
 /*
-nested router를 사용하기 때문에 onClick을 가진 버튼을 만드는것보단
-URL을 바꿔주는 링크만 잇으면 된다
-Link를 눌러서 URL이 변경되지만 전체페이지가 변경되는것이 아니라
-Switch에서 path에 따라 보여지는 컴포넌틍영역만 다르게 보인다
+react query를 사용하면 useState들이랑 await, json()부분을 없애도 된다
+index에서 ThemeProvider로 감싸서 ThemeProvider 안에 있는 모든 것이 theme으로 접근가능
+마찬가지로 react query도 queryClientProvider 안에 있는 모든 것은 queryClient에 접근이 가능하다 
 
-우리가 어떻게 유저와 소통할지 배운다
-우리가 지금 잇는 곳의 URL에 대한 정보를 줘야할텐데 즉, 지금 현재 유저가 어느 탭에 있는지 알려줌으로써 유저와 소통하면 된다: useRouteMatch hook을 활용하면 된다
-
-useRouteMatch: 내가 특정한 URL에 있는지의 여부를 알려준다
-해당 URL에 있으면 {isExact:true}의 object를 받고, 해당 URL에 있지 않으면 null값을 받는다
+데이터를 위한 state, 로딩을 위한 state
+데이터가 준비도면 우리는 데이터를 state에 집어넣고 로딩을 false로 두었지만 react query는 이 모든 과정을 자동으로 해준다
 
 */
