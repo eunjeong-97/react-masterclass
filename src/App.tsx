@@ -3,10 +3,6 @@ import { createGlobalStyle } from "styled-components";
 import Router from "./Router";
 import { ReactQueryDevtools } from "react-query/devtools";
 
-// createGlobalStyle는 한 컴포넌트를 만들 수 있게 한다
-// 렌더링될때 만들어진 컴포넌트는 전역 스코프에 스타일을 적용시켜준다
-// styled-components는 document의 head로 가서 GlobalStyle의 내용을 주입시켜줄 것이다
-
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -68,10 +64,6 @@ function App() {
     <>
       <GlobalStyle />
       <Router />
-      {/* react-query에서 다루는 query들을 시각화하기 위해서 devTools을 가지고 있는데
-	  react-query에 있는 devtools를 import해서 render하면 내 캐시에 있는 query를 볼 수있다
-	  순서는 맨 아래에
-	  */}
       <ReactQueryDevtools initialIsOpen />
     </>
   );

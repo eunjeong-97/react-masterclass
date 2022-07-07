@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 
@@ -16,7 +15,6 @@ interface ICoin {
 }
 
 function Coins() {
-  // useQuery를 활용해서 state와 fetch를 대체할 수 있다
   const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
 
   return (

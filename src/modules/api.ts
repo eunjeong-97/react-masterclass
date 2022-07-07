@@ -1,7 +1,6 @@
 const BASE_URL = "https://api.coinpaprika.com/v1";
 
 export function fetchCoins() {
-  // Promise
   return fetch(`${BASE_URL}/coins`).then((res) => res.json());
 }
 

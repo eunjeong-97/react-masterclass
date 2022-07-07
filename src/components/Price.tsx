@@ -3,6 +3,6 @@ interface IPriceProps {
 }
 
 function Price({ price }: IPriceProps) {
-  return <h1>Price: {price}</h1>;
+  return <h1>오늘시세: {price} USD</h1>;
 }
 export default Price;

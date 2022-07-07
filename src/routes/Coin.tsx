@@ -128,11 +128,10 @@ const Expl = styled.p`
 `;
 
 const TabWrap = styled.div`
-  // grid를 활용해서도 만들어보자
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-bottom: 40px;
+  margin: 20px 0;
 `;
 
 const Tab = styled.div<ITab>`
@@ -156,44 +155,28 @@ const OverViewItem = ({ title, expl, position }: IOverViewItem) => {
 };
 
 function Coin() {
+  const [price, setPrice] = useState(0);
+  const [name, setName] = useState("");
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
-  // const [loading, setLoading] = useState(true);
-  // const [info, setInfo] = useState<InfoData>();
-  // const [priceData, setPriceData] = useState<PriceData>();
-  const [price, setPrice] = useState(0);
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const infoData = await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
-  //     const coinData = await (await fetch(`https://api.coinpaprika.com/v1/ticker/${coinId}`)).json();
-  //     setInfo(infoData);
-  //     setPriceData(coinData);
-  //     setLoading(false);
-  //   })();
-  // }, [coinId]);
-
-  // 이렇게 만들면 queryKey가 동일해지기 때문에 좋지 않다
-  // 하지만 devtools를 보면 react query가 queryKey를 array로 보는걸 알 수있기 때문에 배열형태로 key를 정해준다
-  // isLoading과 data도 동일한 이름이면 곤란하기 때문에 구조분해할당 rename을 활용해서 아래와 같이 활용한다
-  // 그리고 useQuery hook으로 받는 데이터의 타입을 알려주기 위해 interface도 해준다
   const { isLoading: infoLoading, data: info } = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId));
   const { isLoading: tickerLoading, data: ticker } = useQuery<PriceData>(["ticker", coinId], () => fetchCoinTickers(coinId));
+  const loading = infoLoading || tickerLoading;
 
   useEffect(() => {
-    if (ticker) {
-      setPrice(ticker.price_usd);
-    }
+    if (ticker) setPrice(ticker.price_usd);
   }, [ticker]);
 
-  const loading = infoLoading || tickerLoading;
+  useEffect(() => {
+    if (state) setName(state.name);
+  }, [state]);
 
   return (
     <Container>
       <Header>
-        <Title>{state?.name || "Loading"}</Title>
+        <Title>{name !== "" ? name : "Loading.."}</Title>
       </Header>
       {loading ? (
         <Loader>"Loading..."</Loader>
@@ -209,7 +192,6 @@ function Coin() {
             <OverViewItem title="HASH ALGORITHM" expl={info?.hash_algorithm} position={{ left: 10 }} />
             <OverViewItem title="LAST DATA AT:" expl={info?.last_data_at.substring(0, 10)} position={{ right: 10 }} />
           </OverViewWrap>
-          <Expl>현재 시세: {Math.round(price)} USD</Expl>
 
           <TabWrap>
             <Link to={`/${coinId}/price`}>
@@ -226,7 +208,7 @@ function Coin() {
 
           <Switch>
             <Route path={`/:coinId/price`}>
-              <Price price={123} />
+              <Price price={Math.round(price)} />
             </Route>
             <Route path={`/:coinId/chart`}>
               <Chart price={123} />
@@ -240,6 +222,14 @@ function Coin() {
 export default Coin;
 
 /*
-react query는 API로부터 response를 받고 그러한 응답을 캐싱한다
-우리가 다른페이지에 갔다가 재진입 하더라도 캐싱되어잇기 때문에 API에 다시 호출하지 않는다
-*/
+react query가 쩌는 이유
+1. reqct query는 fetcher함수를 만들 수 있게 해준다
+  - react query는 기본적으로 fetcher함수와 연결시켜서 함수가 불렸는지의 여부를 isLoading값으로 전달해준다
+  - 그리고 함수가 끝났을대는 결과값을 data에 넣어서 쉽게 접근할 수 있게 해준다
+2. react query는 아주 강력한 cashing(캐싱) 매커니즘을 가지고 있다
+  - 만약 내 query의 고유한 key값을 react query에 넘겨주었다면 reqct query는 유저에게 Loading을 다시는 보여주지 말라고 한다
+  - react query는 캐시에 어떤 데이터가 있는지 알기 때문에 가능하다
+3. react query는 ReactQueryDevtools 라는걸 가지고 있다
+  - 어떤 queryKey를 가진 데이터가 캐싱되어있는지 보여주고
+  - 결과가 무엇인지 보여주고 data explorer도 보여준다
+ */
