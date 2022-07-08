@@ -1,5 +1,3 @@
-import axios from "axios";
-
 const BASE_URL = "https://api.coinpaprika.com/v1";
 const NICO_URL = "https://ohlcv-api.nomadcoders.workers.dev";
 

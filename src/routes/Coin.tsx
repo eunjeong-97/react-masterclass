@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useParams, Switch, Route, Link, useRouteMatch } from "react-router-dom";
 import { useQuery } from "react-query";
 import styled from "styled-components";
+import { Helmet } from "react-helmet";
 
 import { fetchCoinInfo, fetchCoinTickers } from "../modules/api";
 
@@ -161,7 +162,13 @@ function Coin() {
   const { state } = useLocation<RouteState>();
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
-  const { isLoading: infoLoading, data: info } = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId));
+
+  /*
+  useQuery의 세번째 argument: refetch interval을 밀리seconds로 지정가능
+  여기서는 5초마다 다시 불러옴
+  다시 fetch를 하게 되면 state도 업데이트되고, 그에 따라 UI도 새로고침된다
+  */
+  const { isLoading: infoLoading, data: info } = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId), { refetchInterval: 5000 });
   const { isLoading: tickerLoading, data: ticker } = useQuery<PriceData>(["ticker", coinId], () => fetchCoinTickers(coinId));
   const loading = infoLoading || tickerLoading;
 
@@ -175,6 +182,10 @@ function Coin() {
 
   return (
     <Container>
+      {/* 우리 문서의 head로 가는 direct link */}
+      <Helmet>
+        <title>{name !== "" ? name : "Loading.."}</title>
+      </Helmet>
       <Header>
         <Title>{name !== "" ? name : "Loading.."}</Title>
       </Header>
@@ -231,4 +242,9 @@ Chart 컴포넌트는 우리가 보고자 하는가격의 암호화폐가 무엇
 생각해보면 Coin페이지는 Chart 컴포넌트를 render하는 것이고
 Coin페이지는 URL로부터 이미 coinId값을 알 수 잇다
 그래서 Coin에서 확인하고 props로 전달해줄 것이다
+*/
+
+/*
+react-helmet은 component인데
+여기서 무엇을 render하던 그게 문서의 head로 간다
 */
