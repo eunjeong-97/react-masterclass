@@ -1,7 +1,11 @@
 import styled from "styled-components";
 
+interface ITitle {
+  size?: number;
+}
+
 export const Container = styled.div`
-  padding: 0px 20px;
+  padding: 20px;
   max-width: 480px;
   margin: 0 auto;
 `;
@@ -13,8 +17,8 @@ export const Header = styled.li`
   align-items: center;
 `;
 
-export const Title = styled.h1`
-  font-size: 48px;
+export const Title = styled.h1<ITitle>`
+  font-size: ${(props) => (props.size ? props.size : 48)}px;
   color: ${(props) => props.theme.titleColor};
   margin: 0 10px;
 `;
@@ -71,4 +75,16 @@ export const OverViewWrap = styled.div`
 
 export const Expl = styled.p`
   margin: 20px 0;
+`;
+
+interface ILine {
+  top: number;
+  bottom: number;
+}
+
+export const Line = styled.div<ILine>`
+  width: 100%;
+  height: ${(props) => props.top}px;
+  margin-bottom: ${(props) => props.bottom}px;
+  border-bottom: 1px solid ${(props) => props.theme.titleColor};
 `;

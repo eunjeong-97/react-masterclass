@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { createGlobalStyle } from "styled-components";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { ThemeProvider } from "styled-components";
@@ -65,8 +64,6 @@ a {
 `;
 
 function App() {
-  // RecoilRoot안에서 atom을 연결하는방법
-  // atom이 변경되면 컴포넌트들도 변경된값으로 다시 리렌더링한다
   const isDark = useRecoilValue(isDarkAtom);
   return (
     <ThemeProvider theme={isDark ? dark : light}>

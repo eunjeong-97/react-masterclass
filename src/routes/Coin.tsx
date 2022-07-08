@@ -140,8 +140,8 @@ function Coin() {
   const [name, setName] = useState("");
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
-  const priceMatch = useRouteMatch("/:coinId/price");
-  const chartMatch = useRouteMatch("/:coinId/chart");
+  const priceMatch = useRouteMatch("/coins/:coinId/price");
+  const chartMatch = useRouteMatch("/coins/:coinId/chart");
   const isDark = useRecoilValue(isDarkAtom);
 
   // atom의 value을 감지하기 위해서는 useRecoilValue hook을 사용했지만
@@ -195,12 +195,12 @@ function Coin() {
           </OverViewWrap>
 
           <TabWrap>
-            <Link to={`/${coinId}/price`}>
+            <Link to={`/coins/${coinId}/price`}>
               <Tab width={190} isActive={priceMatch !== null}>
                 PRICE
               </Tab>
             </Link>
-            <Link to={`/${coinId}/chart`}>
+            <Link to={`/coins/${coinId}/chart`}>
               <Tab width={190} isActive={chartMatch !== null}>
                 CHART
               </Tab>
@@ -208,10 +208,10 @@ function Coin() {
           </TabWrap>
 
           <Switch>
-            <Route path={`/:coinId/price`}>
+            <Route path={`/coins/:coinId/price`}>
               <Price price={Math.round(price)} />
             </Route>
-            <Route path={`/:coinId/chart`}>
+            <Route path={`/coins/:coinId/chart`}>
               <Chart coinId={coinId} />
             </Route>
           </Switch>
