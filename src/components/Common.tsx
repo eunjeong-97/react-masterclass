@@ -16,6 +16,7 @@ export const Header = styled.li`
 export const Title = styled.h1`
   font-size: 48px;
   color: ${(props) => props.theme.titleColor};
+  margin: 0 10px;
 `;
 
 export const CoinsList = styled.ul``;
@@ -47,4 +48,27 @@ export const Img = styled.img`
   width: 35px;
   height: 35px;
   margin-right: 10px;
+`;
+
+export const TabWrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 20px 0;
+`;
+
+export const OverViewWrap = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  background-color: ${(props) => props.theme.accentColor};
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  padding: 10px;
+`;
+
+export const Expl = styled.p`
+  margin: 20px 0;
 `;

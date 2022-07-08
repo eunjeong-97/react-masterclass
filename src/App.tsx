@@ -64,13 +64,14 @@ a {
 
 function App() {
   const [isDark, setIsDark] = useState(false);
-  //   const toggleDark = () => setIsDark(!isDark); 이렇게 사용하지 않는 이유는?
-  const toggleDark = () => setIsDark((current) => !isDark);
+
+  // argument를 받지않고 return하지 않음: changeTheme의 signature
+  const changeTheme = () => setIsDark((current) => !isDark);
+
   return (
     <ThemeProvider theme={isDark ? dark : light}>
-      <button onClick={toggleDark}>Change Theme</button>
       <GlobalStyle />
-      <Router />
+      <Router changeTheme={changeTheme} isDark={isDark} />
       <ReactQueryDevtools initialIsOpen />
     </ThemeProvider>
   );
@@ -79,8 +80,12 @@ function App() {
 export default App;
 
 /*
-recoil: reactJS에서 사용할 수있는 state management 라이브러리
-지금은 state management없이 다크모드 화이트모드를 구현해보는데
-이때 state를 사용하기 위해 ThemeProvider를 index.ts → App.tsx로 이동시킴
+global state는 어플리케이션이 무언가를 인지해야할때 사용한다
+어플리케이션이 특정 value에 접근해야할때 사용한다
+컴포넌트가 어디에 있던, 누가 접근하고자 하는지에 상관없이
+여기서는 Coins나 Coin이나 Chart에서 isDark에 접근해야 할대
+그래서 글로벌state는 어플리케이션 전체에서 접근이 가능한 state를 말한다
+
+예를들어 로그인한 상태에서만 접근이 가능하거나 하는 등등
 
 */

@@ -1,5 +1,6 @@
 const BASE_URL = "https://api.coinpaprika.com/v1";
 const NICO_URL = "https://ohlcv-api.nomadcoders.workers.dev";
+export const ICON_URL = "https://coinicons-api.vercel.app/api/icon/";
 
 export function fetchCoins() {
   return fetch(`${BASE_URL}/coins`).then((res) => res.json());

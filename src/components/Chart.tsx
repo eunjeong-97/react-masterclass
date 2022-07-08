@@ -4,6 +4,7 @@ import ApexChart from "react-apexcharts";
 
 interface IChartProps {
   coinId: string;
+  isDark: boolean;
 }
 
 interface IChart {
@@ -17,7 +18,7 @@ interface IChart {
   market_cap: number;
 }
 
-function Chart({ coinId }: IChartProps) {
+function Chart({ coinId, isDark }: IChartProps) {
   const { isLoading, data } = useQuery<IChart[]>(["chart", coinId], () => fetchCoinHistory(coinId), { refetchInterval: 10000 });
 
   // https://apexcharts.com/docs/react-charts/ 공식문서에서 API를 살펴보면서 필요한 옵션들을 다 넣자
@@ -29,7 +30,7 @@ function Chart({ coinId }: IChartProps) {
         <ApexChart
           type="line"
           options={{
-            theme: { mode: "dark" },
+            theme: { mode: isDark ? "dark" : "light" },
             chart: {
               width: 500,
               height: 500,

@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
+import DarkModeToggle from "react-dark-mode-toggle";
+import { Helmet } from "react-helmet";
 
-import { fetchCoins } from "../modules/api";
+import { fetchCoins, ICON_URL } from "../modules/api";
 import { Container, Header, Title, Loader, CoinsList, Coin, Img } from "../components/Common";
 
 interface ICoin {
@@ -14,13 +16,23 @@ interface ICoin {
   type: string;
 }
 
-function Coins() {
+interface ICoinsProps {
+  changeTheme: () => void;
+  isDark: boolean;
+}
+
+function Coins({ changeTheme, isDark }: ICoinsProps) {
   const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
 
   return (
     <Container>
+      <Helmet>
+        <link rel="icon" href="https://ifh.cc/g/9LvAKA.png" />
+      </Helmet>
+
       <Header>
         <Title>코인</Title>
+        <DarkModeToggle onChange={changeTheme} checked={isDark} size={60} />
       </Header>
       {isLoading ? (
         <Loader>"Loading..."</Loader>
@@ -34,7 +46,7 @@ function Coins() {
                   state: { name: coin.name },
                 }}
               >
-                <Img src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
+                <Img src={`${ICON_URL}${coin.symbol.toLowerCase()}`} />
                 {coin.name} &rarr;
               </Link>
             </Coin>

@@ -3,10 +3,11 @@ import { useLocation, useParams, Switch, Route, Link, useRouteMatch } from "reac
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { Helmet } from "react-helmet";
+import DarkModeToggle from "react-dark-mode-toggle";
 
-import { fetchCoinInfo, fetchCoinTickers } from "../modules/api";
+import { fetchCoinInfo, fetchCoinTickers, ICON_URL } from "../modules/api";
 
-import { Container, Header, Title, Loader } from "../components/Common";
+import { Container, Header, Title, Loader, TabWrap, OverViewWrap, Expl } from "../components/Common";
 import Price from "../components/Price";
 import Chart from "../components/Chart";
 
@@ -94,22 +95,15 @@ interface IOverViewItem {
   };
 }
 
+interface ICoinProps {
+  isDark: boolean;
+  changeTheme: () => void;
+}
+
 interface ITab {
   width?: number;
   isActive: boolean;
 }
-
-const OverViewWrap = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  background-color: ${(props) => props.theme.accentColor};
-  width: 100%;
-  height: 50px;
-  border-radius: 10px;
-  padding: 10px;
-`;
 
 const OverView = styled.div<IOverView>`
   flex: 1;
@@ -124,17 +118,6 @@ const OverView = styled.div<IOverView>`
   }
 `;
 
-const Expl = styled.p`
-  margin: 20px 0;
-`;
-
-const TabWrap = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin: 20px 0;
-`;
-
 const Tab = styled.div<ITab>`
   display: flex;
   justify-content: center;
@@ -142,7 +125,7 @@ const Tab = styled.div<ITab>`
   border-radius: 10px;
   width: ${(props) => props.width}px;
   padding: 10px;
-  background-color: ${(props) => (props.isActive ? props.theme.btnTextColor : props.theme.btnColor)};
+  background-color: ${(props) => (props.isActive ? props.theme.accentColor : props.theme.btnColor)};
   color: ${(props) => props.theme.bgColor};
 `;
 
@@ -155,7 +138,7 @@ const OverViewItem = ({ title, expl, position }: IOverViewItem) => {
   );
 };
 
-function Coin() {
+function Coin({ isDark, changeTheme }: ICoinProps) {
   const [price, setPrice] = useState(0);
   const [name, setName] = useState("");
   const { coinId } = useParams<RouteParams>();
@@ -166,6 +149,8 @@ function Coin() {
   const { isLoading: infoLoading, data: info } = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId), { refetchInterval: 5000 });
   const { isLoading: tickerLoading, data: ticker } = useQuery<PriceData>(["ticker", coinId], () => fetchCoinTickers(coinId));
   const loading = infoLoading || tickerLoading;
+
+  console.log(info);
 
   useEffect(() => {
     if (ticker) setPrice(ticker.price_usd);
@@ -179,9 +164,17 @@ function Coin() {
     <Container>
       <Helmet>
         <title>{name !== "" ? name : "Loading.."}</title>
+        <link rel="icon" href={`${ICON_URL}${info?.symbol.toLowerCase()}`} />
       </Helmet>
       <Header>
+        <Link to="/">
+          <Tab width={100} isActive={false}>
+            MainPage
+          </Tab>
+        </Link>
+
         <Title>{name !== "" ? name : "Loading.."}</Title>
+        <DarkModeToggle onChange={changeTheme} checked={isDark} size={60} />
       </Header>
       {loading ? (
         <Loader>"Loading..."</Loader>
@@ -216,7 +209,7 @@ function Coin() {
               <Price price={Math.round(price)} />
             </Route>
             <Route path={`/:coinId/chart`}>
-              <Chart coinId={coinId} />
+              <Chart coinId={coinId} isDark={isDark} />
             </Route>
           </Switch>
         </>
