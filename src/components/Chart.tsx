@@ -53,9 +53,3 @@ function Chart({ coinId }: IChartProps) {
   );
 }
 export default Chart;
-
-/*
-API로부터 받은 data를 시각화
-자바스크립트 chart 라이브러리인 apexcharts를 활용
-
-*/

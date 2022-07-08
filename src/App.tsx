@@ -1,7 +1,10 @@
-import React from "react";
+import { useState } from "react";
 import { createGlobalStyle } from "styled-components";
-import Router from "./Router";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { ThemeProvider } from "styled-components";
+
+import Router from "./Router";
+import { dark, light } from "./theme";
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
@@ -32,8 +35,8 @@ footer, header, hgroup, menu, nav, section {
 body {
 	line-height: 1;
 	font-family: 'Do Hyeon', sans-serif;
-	background-color: ${(props) => props.theme.gray.dark};
-  color: ${(props) => props.theme.gray.light};
+	background-color: ${(props) => props.theme.bgColor};
+  color: ${(props) => props.theme.textColor};
 }
 ol, ul {
 	list-style: none;
@@ -60,13 +63,24 @@ a {
 `;
 
 function App() {
+  const [isDark, setIsDark] = useState(false);
+  //   const toggleDark = () => setIsDark(!isDark); 이렇게 사용하지 않는 이유는?
+  const toggleDark = () => setIsDark((current) => !isDark);
   return (
-    <>
+    <ThemeProvider theme={isDark ? dark : light}>
+      <button onClick={toggleDark}>Change Theme</button>
       <GlobalStyle />
       <Router />
       <ReactQueryDevtools initialIsOpen />
-    </>
+    </ThemeProvider>
   );
 }
 
 export default App;
+
+/*
+recoil: reactJS에서 사용할 수있는 state management 라이브러리
+지금은 state management없이 다크모드 화이트모드를 구현해보는데
+이때 state를 사용하기 위해 ThemeProvider를 index.ts → App.tsx로 이동시킴
+
+*/

@@ -104,7 +104,7 @@ const OverViewWrap = styled.div`
   align-items: center;
   justify-content: space-between;
   position: relative;
-  background-color: ${(props) => props.theme.purple};
+  background-color: ${(props) => props.theme.accentColor};
   width: 100%;
   height: 50px;
   border-radius: 10px;
@@ -119,7 +119,7 @@ const OverView = styled.div<IOverView>`
   p {
     text-align: center;
     &:last-child {
-      color: ${(props) => props.theme.blue.dark};
+      color: ${(props) => props.theme.bgColor};
     }
   }
 `;
@@ -142,8 +142,8 @@ const Tab = styled.div<ITab>`
   border-radius: 10px;
   width: ${(props) => props.width}px;
   padding: 10px;
-  background-color: ${(props) => (props.isActive ? props.theme.blue.light : props.theme.blue.dark)};
-  color: ${(props) => props.theme.gray.dark};
+  background-color: ${(props) => (props.isActive ? props.theme.btnTextColor : props.theme.btnColor)};
+  color: ${(props) => props.theme.bgColor};
 `;
 
 const OverViewItem = ({ title, expl, position }: IOverViewItem) => {
@@ -163,11 +163,6 @@ function Coin() {
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
 
-  /*
-  useQuery의 세번째 argument: refetch interval을 밀리seconds로 지정가능
-  여기서는 5초마다 다시 불러옴
-  다시 fetch를 하게 되면 state도 업데이트되고, 그에 따라 UI도 새로고침된다
-  */
   const { isLoading: infoLoading, data: info } = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId), { refetchInterval: 5000 });
   const { isLoading: tickerLoading, data: ticker } = useQuery<PriceData>(["ticker", coinId], () => fetchCoinTickers(coinId));
   const loading = infoLoading || tickerLoading;
@@ -182,7 +177,6 @@ function Coin() {
 
   return (
     <Container>
-      {/* 우리 문서의 head로 가는 direct link */}
       <Helmet>
         <title>{name !== "" ? name : "Loading.."}</title>
       </Helmet>
@@ -231,20 +225,3 @@ function Coin() {
   );
 }
 export default Coin;
-
-/*
-Chart 컴포넌트는 우리가 보고자 하는가격의 암호화폐가 무엇인지 알아야 한다
-1. react-router-dom에서 useParams() hook를 활용할텐데 Chart버튼을 눌러서 Chart탭상태일때만 확인이 가능하다
-(Chant내부에서 useParams()를 사용하는것이기 때문에)
-만약 암호화폐를 보기 위해 Coin페이지에 와서 Chart를 누르지 않았다면 확인할 수 없다
-2. router로부터 parameter가져온다
-
-생각해보면 Coin페이지는 Chart 컴포넌트를 render하는 것이고
-Coin페이지는 URL로부터 이미 coinId값을 알 수 잇다
-그래서 Coin에서 확인하고 props로 전달해줄 것이다
-*/
-
-/*
-react-helmet은 component인데
-여기서 무엇을 render하던 그게 문서의 head로 간다
-*/

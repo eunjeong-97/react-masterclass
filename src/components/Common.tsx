@@ -15,14 +15,14 @@ export const Header = styled.li`
 
 export const Title = styled.h1`
   font-size: 48px;
-  color: ${(props) => props.theme.blue.normal};
+  color: ${(props) => props.theme.titleColor};
 `;
 
 export const CoinsList = styled.ul``;
 
 export const Coin = styled.li`
   background-color: white;
-  color: ${(props) => props.theme.blue.light};
+  color: ${(props) => props.theme.btnTextColor};
   margin-bottom: 10px;
   border-radius: 15px;
   a {
@@ -33,7 +33,7 @@ export const Coin = styled.li`
   }
   &:hover {
     a {
-      color: ${(props) => props.theme.purple};
+      color: ${(props) => props.theme.accentColor};
     }
   }
 `;

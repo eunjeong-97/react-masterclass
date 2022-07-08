@@ -1,6 +1,6 @@
-import { DefaultTheme } from "styled-components";
+import { DefaultTheme, ColorTheme } from "styled-components";
 
-export const theme: DefaultTheme = {
+const color: ColorTheme = {
   // https://flatuicolors.com/palette/ca
   blue: {
     light: "#48dbfb",
@@ -13,4 +13,22 @@ export const theme: DefaultTheme = {
     normal: "#8395a7",
     dark: "#222f3e",
   },
+};
+
+export const dark: DefaultTheme = {
+  bgColor: color.gray.dark,
+  textColor: color.gray.light,
+  btnColor: color.blue.dark,
+  titleColor: color.blue.normal,
+  btnTextColor: color.blue.light,
+  accentColor: color.purple,
+};
+
+export const light: DefaultTheme = {
+  bgColor: color.gray.light,
+  textColor: color.gray.dark,
+  btnColor: color.gray.dark,
+  titleColor: color.gray.dark,
+  btnTextColor: color.gray.dark,
+  accentColor: color.blue.dark,
 };
