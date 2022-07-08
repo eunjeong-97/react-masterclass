@@ -2,7 +2,9 @@ import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 import DarkModeToggle from "react-dark-mode-toggle";
 import { Helmet } from "react-helmet";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
+import { isDarkAtom } from "../atom";
 import { fetchCoins, ICON_URL } from "../modules/api";
 import { Container, Header, Title, Loader, CoinsList, Coin, Img } from "../components/Common";
 
@@ -16,13 +18,11 @@ interface ICoin {
   type: string;
 }
 
-interface ICoinsProps {
-  changeTheme: () => void;
-  isDark: boolean;
-}
-
-function Coins({ changeTheme, isDark }: ICoinsProps) {
+function Coins() {
   const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
+  const isDark = useRecoilValue(isDarkAtom);
+  const setDarkAtom = useSetRecoilState(isDarkAtom);
+  const changeTheme = () => setDarkAtom((prev: boolean) => !prev);
 
   return (
     <Container>
@@ -42,7 +42,7 @@ function Coins({ changeTheme, isDark }: ICoinsProps) {
             <Coin key={coin.id}>
               <Link
                 to={{
-                  pathname: `/${coin.id}`,
+                  pathname: `/${coin.id}/price`,
                   state: { name: coin.name },
                 }}
               >

@@ -1,10 +1,12 @@
 import { useQuery } from "react-query";
 import { fetchCoinHistory } from "../modules/api";
 import ApexChart from "react-apexcharts";
+import { useRecoilValue } from "recoil";
+
+import { isDarkAtom } from "../atom";
 
 interface IChartProps {
   coinId: string;
-  isDark: boolean;
 }
 
 interface IChart {
@@ -18,8 +20,9 @@ interface IChart {
   market_cap: number;
 }
 
-function Chart({ coinId, isDark }: IChartProps) {
+function Chart({ coinId }: IChartProps) {
   const { isLoading, data } = useQuery<IChart[]>(["chart", coinId], () => fetchCoinHistory(coinId), { refetchInterval: 10000 });
+  const isDark = useRecoilValue(isDarkAtom);
 
   // https://apexcharts.com/docs/react-charts/ 공식문서에서 API를 살펴보면서 필요한 옵션들을 다 넣자
   return (

@@ -4,8 +4,10 @@ import { useQuery } from "react-query";
 import styled from "styled-components";
 import { Helmet } from "react-helmet";
 import DarkModeToggle from "react-dark-mode-toggle";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { fetchCoinInfo, fetchCoinTickers, ICON_URL } from "../modules/api";
+import { isDarkAtom } from "../atom";
 
 import { Container, Header, Title, Loader, TabWrap, OverViewWrap, Expl } from "../components/Common";
 import Price from "../components/Price";
@@ -95,11 +97,6 @@ interface IOverViewItem {
   };
 }
 
-interface ICoinProps {
-  isDark: boolean;
-  changeTheme: () => void;
-}
-
 interface ITab {
   width?: number;
   isActive: boolean;
@@ -138,19 +135,24 @@ const OverViewItem = ({ title, expl, position }: IOverViewItem) => {
   );
 };
 
-function Coin({ isDark, changeTheme }: ICoinProps) {
+function Coin() {
   const [price, setPrice] = useState(0);
   const [name, setName] = useState("");
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
+  const isDark = useRecoilValue(isDarkAtom);
 
+  // atom의 value을 감지하기 위해서는 useRecoilValue hook을 사용했지만
+  // 이러한 atom의 value를 수정하기 위해선 useSetRecoilState hook을 사용한다
+  // atom의 값을 변경하려면 modifier 함수를 사용하는데, 이 함수는 인자로 함수((prev: boolean) => !prev)를 받을 수 있다
+  // 즉, modifier함수에게 이전상태를 주면 우리가 원하는 아무값이나 내가 원하는 값을 입력해서 반환이 가능하다
+  const setDarkAtom = useSetRecoilState(isDarkAtom);
+  const changeTheme = () => setDarkAtom((prev: boolean) => !prev);
   const { isLoading: infoLoading, data: info } = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId), { refetchInterval: 5000 });
   const { isLoading: tickerLoading, data: ticker } = useQuery<PriceData>(["ticker", coinId], () => fetchCoinTickers(coinId));
   const loading = infoLoading || tickerLoading;
-
-  console.log(info);
 
   useEffect(() => {
     if (ticker) setPrice(ticker.price_usd);
@@ -174,6 +176,7 @@ function Coin({ isDark, changeTheme }: ICoinProps) {
         </Link>
 
         <Title>{name !== "" ? name : "Loading.."}</Title>
+        {/* useState처럼 이전value를 가지고와서 반대값으로 return해도 된다 */}
         <DarkModeToggle onChange={changeTheme} checked={isDark} size={60} />
       </Header>
       {loading ? (
@@ -209,7 +212,7 @@ function Coin({ isDark, changeTheme }: ICoinProps) {
               <Price price={Math.round(price)} />
             </Route>
             <Route path={`/:coinId/chart`}>
-              <Chart coinId={coinId} isDark={isDark} />
+              <Chart coinId={coinId} />
             </Route>
           </Switch>
         </>

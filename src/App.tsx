@@ -2,9 +2,11 @@ import { useState } from "react";
 import { createGlobalStyle } from "styled-components";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { ThemeProvider } from "styled-components";
+import { useRecoilValue } from "recoil";
 
 import Router from "./Router";
 import { dark, light } from "./theme";
+import { isDarkAtom } from "./atom";
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
@@ -63,29 +65,16 @@ a {
 `;
 
 function App() {
-  const [isDark, setIsDark] = useState(false);
-
-  // argument를 받지않고 return하지 않음: changeTheme의 signature
-  const changeTheme = () => setIsDark((current) => !isDark);
-
+  // RecoilRoot안에서 atom을 연결하는방법
+  // atom이 변경되면 컴포넌트들도 변경된값으로 다시 리렌더링한다
+  const isDark = useRecoilValue(isDarkAtom);
   return (
     <ThemeProvider theme={isDark ? dark : light}>
       <GlobalStyle />
-      <Router changeTheme={changeTheme} isDark={isDark} />
+      <Router />
       <ReactQueryDevtools initialIsOpen />
     </ThemeProvider>
   );
 }
 
 export default App;
-
-/*
-global state는 어플리케이션이 무언가를 인지해야할때 사용한다
-어플리케이션이 특정 value에 접근해야할때 사용한다
-컴포넌트가 어디에 있던, 누가 접근하고자 하는지에 상관없이
-여기서는 Coins나 Coin이나 Chart에서 isDark에 접근해야 할대
-그래서 글로벌state는 어플리케이션 전체에서 접근이 가능한 state를 말한다
-
-예를들어 로그인한 상태에서만 접근이 가능하거나 하는 등등
-
-*/
