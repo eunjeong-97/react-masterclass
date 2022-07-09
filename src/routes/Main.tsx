@@ -26,7 +26,11 @@ function Main() {
         <Tab size={30}>CRYPTO TICKER</Tab>
       </Link>
 
-      <Link to="/todos">
+      <Link to="/signup">
+        <Tab size={30}>Signup</Tab>
+      </Link>
+
+      <Link to="/todo">
         <Tab size={30}>To Do List</Tab>
       </Link>
     </Container>

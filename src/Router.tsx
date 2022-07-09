@@ -4,6 +4,7 @@ import Coin from "./routes/Coin";
 import Main from "./routes/Main";
 import Signup from "./routes/Signup";
 import Todos from "./routes/Todos";
+import Error from "./routes/Error";
 
 function Router() {
   return (
@@ -23,6 +24,9 @@ function Router() {
         </Route>
         <Route path="/">
           <Main />
+        </Route>
+        <Route path='*'>
+          <Error />
         </Route>
       </Switch>
     </BrowserRouter>
