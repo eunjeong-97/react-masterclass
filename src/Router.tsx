@@ -2,7 +2,8 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Coins from "./routes/Coins";
 import Coin from "./routes/Coin";
 import Main from "./routes/Main";
-import ToDoList from "./routes/ToDoList";
+import Signup from "./routes/Signup";
+import Todos from "./routes/Todos";
 
 function Router() {
   return (
@@ -14,8 +15,11 @@ function Router() {
         <Route path="/coins">
           <Coins />
         </Route>
-        <Route path="/todos">
-          <ToDoList />
+        <Route path="/signup">
+          <Signup />
+        </Route>
+        <Route path='/todo'>
+          <Todos />
         </Route>
         <Route path="/">
           <Main />
