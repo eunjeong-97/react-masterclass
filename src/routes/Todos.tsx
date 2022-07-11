@@ -4,7 +4,7 @@ import { Container, Title } from "../components/Common";
 import CreateTodo from "../components/CreateTodo";
 import Todo from "../components/Todo";
 
-import { categoryState, todoSelector } from "../atom";
+import { categoryState, todoSelector, Categories } from "../atom";
 import React from "react";
 
 function Todos() {
@@ -14,37 +14,20 @@ function Todos() {
     const {
       currentTarget: { value },
     } = event;
-    setCategory(value);
+    // 타입스크립트는 option의 value가 categoties 타입과 같다는걸 알 수 없다
+    setCategory(value as any);
   };
   return (
     <Container>
       <Title>To Do List</Title>
       <hr />
       <select onInput={onInput}>
-        {/* 여기서 value는 카테고리값을 넣어주면된다 */}
-        <option value="TODO">TO DO</option>
-        <option value="DOING">DOING</option>
-        <option value="DONE">DONE</option>
+        <option value={Categories.TODO}>TO DO</option>
+        <option value={Categories.DOING}>DOING</option>
+        <option value={Categories.DONE}>DONE</option>
       </select>
       <CreateTodo />
-      {/* <h2>TO DO</h2>
-      <ul>
-        {todos.map((todo) => (
-          <Todo {...todo} key={todo.id} />
-        ))}
-      </ul>
-      <h2>DOING</h2>
-      <ul>
-        {doings.map((todo) => (
-          <Todo {...todo} key={todo.id} />
-        ))}
-      </ul>
-      <h2>DONE</h2>
-      <ul>
-        {dones.map((todo) => (
-          <Todo {...todo} key={todo.id} />
-        ))}
-      </ul> */}
+      <h2>{category}</h2>
       {todos?.map((todo) => (
         <Todo key={todo.id} {...todo} />
       ))}

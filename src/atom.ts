@@ -4,10 +4,22 @@ export const isDarkAtom = atom({
   default: false,
 });
 
+// "TODO" | "DOING" | "DONE" 이 반복되기 때문에 변수선언
+// type categories = "TODO" | "DOING" | "DONE";
+// enum은 프로그래머를 도와주기 위해 일련의 숫자를 문자로 표시해준다
+export enum Categories {
+  // "TODO", // Categories.TODO = 0
+  // "DOING", // Categories.DOING = 1
+  // "DONE", // Categories.DONE = 2
+  "TODO" = "TODO", // Categories.TODO = "TODO"
+  "DOING" = "DOING", // Categories.DOING = "DOING"
+  "DONE" = "DONE", // Categories.DONE = "DONE"
+}
+
 export interface ITodo {
   text: string;
   id: number;
-  category: "TODO" | "DOING" | "DONE";
+  category: Categories;
 }
 
 export const todoState = atom<ITodo[]>({
@@ -15,23 +27,16 @@ export const todoState = atom<ITodo[]>({
   default: [],
 });
 
-// selector는 state를 가져다가 원하는대로 모습을 변형시킬 수 잇는 도구이다
-// todoState는 하나의 배열이지만 그 todoState들의 아이템들을 각각의 배열로 분류하고 싶기 때문이다
-// atom에 데이터를 모아두고 selector로 데이터를 변형할 수 있다
-// 하지만 지금처럼 모든 카테고리를 한번에 return하는 대신 하나의 카테고리만 return하도록 새로운 selector state를 만들것이다
 export const todoSelector = selector({
   key: "todoSelector",
   get: ({ get }) => {
     const todos = get(todoState);
     const category = get(categoryState);
-    // if (category == "TODO") return todos.filter((todo) => todo.category === "TODO");
-    // if (category === "DOING") return todos.filter((todo) => todo.category === "DOING");
-    // return todos.filter((todo) => todo.category === "DONE");
     return todos.filter((todo) => todo.category === category);
   },
 });
 
-export const categoryState = atom({
+export const categoryState = atom<Categories>({
   key: "category",
-  default: "TODO",
+  default: Categories.TODO,
 });
