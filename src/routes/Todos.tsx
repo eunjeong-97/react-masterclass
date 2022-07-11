@@ -14,7 +14,6 @@ function Todos() {
     const {
       currentTarget: { value },
     } = event;
-    // 타입스크립트는 option의 value가 categoties 타입과 같다는걸 알 수 없다
     setCategory(value as any);
   };
   return (

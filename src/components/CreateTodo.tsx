@@ -18,7 +18,6 @@ function CreateTodo() {
   const category = useRecoilValue(categoryState);
 
   const onValid = ({ todo }: IForm) => {
-    // 새로운 todo요소를 만들때 매번 'TODO'로 입력되는것이 아니라 categoryState값을 따라서 넣게 하고 싶다
     setTodos((oldTodos) => [{ text: todo, category, id: Date.now() }, ...oldTodos]);
     setValue("todo", "");
   };
