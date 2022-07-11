@@ -1,24 +1,33 @@
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 import { Container, Title } from "../components/Common";
 import CreateTodo from "../components/CreateTodo";
 import Todo from "../components/Todo";
 
-import { todoSelector } from "../atom";
+import { categoryState, todoSelector } from "../atom";
+import React from "react";
 
 function Todos() {
-  //   const todos = useRecoilValue(todoState);
-  const [todos, doings, dones] = useRecoilValue(todoSelector);
-  //   const selectorOutput = useRecoilValue(todoSelector);
-  //   console.log(selectorOutput); // atom.ts에서 get함수에서 return된값을 확인할 수 잇다
-  // todo가 추가되거나 카테고리가 변경되었을때 selector가 작동함에 따라 실행된다
-  // 주의해야할 점은 state 자체가 바뀌는게 아니라 그 return값을 바뀌는 것이다
-  // todoState는 변경되지않는다
+  const todos = useRecoilValue(todoSelector);
+  const [category, setCategory] = useRecoilState(categoryState);
+  const onInput = (event: React.FormEvent<HTMLSelectElement>) => {
+    const {
+      currentTarget: { value },
+    } = event;
+    setCategory(value);
+  };
   return (
     <Container>
       <Title>To Do List</Title>
+      <hr />
+      <select onInput={onInput}>
+        {/* 여기서 value는 카테고리값을 넣어주면된다 */}
+        <option value="TODO">TO DO</option>
+        <option value="DOING">DOING</option>
+        <option value="DONE">DONE</option>
+      </select>
       <CreateTodo />
-      <h2>TO DO</h2>
+      {/* <h2>TO DO</h2>
       <ul>
         {todos.map((todo) => (
           <Todo {...todo} key={todo.id} />
@@ -35,7 +44,10 @@ function Todos() {
         {dones.map((todo) => (
           <Todo {...todo} key={todo.id} />
         ))}
-      </ul>
+      </ul> */}
+      {todos?.map((todo) => (
+        <Todo key={todo.id} {...todo} />
+      ))}
     </Container>
   );
 }
