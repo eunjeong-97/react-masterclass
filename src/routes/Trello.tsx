@@ -57,11 +57,26 @@ function Trello() {
     setHours(+event.currentTarget.value);
   };
 
-  const onDragEnd = ({ destination, source }: DropResult) => {
-    // 어떤일이 일어났는지에 대한 정보로 많은 argument를 준다
-    // Draggable의 draggableId이며
-    // Draggable컴포넌트가 어디로 드래그 되었는지 index나 Droppable의 draggableId를 알려준다
-    // source는 시작점 destination 도착지
+  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
+    // 도착지가 없으면 아무런 변화주지 않는다
+    if (!destination) return;
+    // splice()는 우리의 array를 재정렬하도록 도와준다
+    // 한 자리에서 array를 수정하고 변형시킬 수 있다
+
+    // 새로운 state을 전달해서 교체를 해주거나
+    // 현재의 값을 argument로 주고 새로운 state를 return함수를 전달하거나
+    setTodos((currentTodos) => {
+      // 현재todos의 복사본을 만들어서 복사본을 변형하고 그 후 그 복사본을 return한다
+      const copyTodos = [...currentTodos];
+      // 1. source.index item삭제: 움직이는 item삭제
+      // source는 그 움직임의 source를 가지고 있는 object이다
+      copyTodos.splice(source.index, 1);
+      // 2. 움직이는 item을 도착한지점에 넣어줌
+      copyTodos.splice(destination.index, 0, draggableId);
+      // state가 변경되면서 글씨가 좀 흔들리는 이슈가 생긴다
+      // 최적화와 관련된문제
+      return copyTodos;
+    });
   };
   return (
     <div>
@@ -75,9 +90,9 @@ function Trello() {
                 <Board ref={magic.innerRef} {...magic.droppableProps}>
                   <BoardTitle size={15}>Board</BoardTitle>
                   {todos.map((todo, index) => (
-                    // draggableId: 현재 내가 드래그한 요소를 찾을때 활용
-                    // 따라서 값을 넣어주는것이 좋다
-                    <Draggable draggableId={todo} index={index} key={index}>
+                    // Draggable의 key와 draggalbeId와 같아야한다
+                    // ReactJS에서 key는 index로 줬지만 여기서는 draggableId와 동일한 todo를 줘야 한다
+                    <Draggable draggableId={todo} index={index} key={todo}>
                       {(magic) => (
                         <Card ref={magic.innerRef} {...magic.draggableProps} {...magic.dragHandleProps}>
                           {todo}
