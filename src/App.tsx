@@ -5,7 +5,7 @@ import { useRecoilValue } from "recoil";
 
 import Router from "./Router";
 import { dark, light } from "./theme";
-import { isDarkAtom } from "./atom";
+import { isDarkAtom } from "./atom/todo";
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,

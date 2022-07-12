@@ -4,6 +4,7 @@ import Coin from "./routes/Coin";
 import Main from "./routes/Main";
 import Signup from "./routes/Signup";
 import Todos from "./routes/Todos";
+import Trello from "./routes/Trello";
 import Error from "./routes/Error";
 
 function Router() {
@@ -19,13 +20,16 @@ function Router() {
         <Route path="/signup">
           <Signup />
         </Route>
-        <Route path='/todo'>
+        <Route path="/todo">
           <Todos />
+        </Route>
+        <Route path="/trello">
+          <Trello />
         </Route>
         <Route path="/">
           <Main />
         </Route>
-        <Route path='*'>
+        <Route path="*">
           <Error />
         </Route>
       </Switch>

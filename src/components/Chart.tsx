@@ -3,7 +3,7 @@ import { fetchCoinHistory } from "../modules/api";
 import ApexChart from "react-apexcharts";
 import { useRecoilValue } from "recoil";
 
-import { isDarkAtom } from "../atom";
+import { isDarkAtom } from "../atom/todo";
 
 interface IChartProps {
   coinId: string;

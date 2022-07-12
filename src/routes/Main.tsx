@@ -33,6 +33,10 @@ function Main() {
       <Link to="/todo">
         <Tab size={30}>To Do List</Tab>
       </Link>
+
+      <Link to="/trello">
+        <Tab size={30}>Trello</Tab>
+      </Link>
     </Container>
   );
 }

@@ -4,7 +4,7 @@ import DarkModeToggle from "react-dark-mode-toggle";
 import { Helmet } from "react-helmet";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
-import { isDarkAtom } from "../atom";
+import { isDarkAtom } from "../atom/todo";
 import { fetchCoins, ICON_URL, FAVICON_URL } from "../modules/api";
 import { Container, Header, Title, Loader, CoinsList, Coin, Img } from "../components/Common";
 

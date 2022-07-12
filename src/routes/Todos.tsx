@@ -4,7 +4,7 @@ import { Container, Title } from "../components/Common";
 import CreateTodo from "../components/CreateTodo";
 import Todo from "../components/Todo";
 
-import { categoryState, todoSelector, Categories } from "../atom";
+import { categoryState, todoSelector, Categories } from "../atom/todo";
 import React from "react";
 
 function Todos() {
