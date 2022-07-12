@@ -1,10 +1,11 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 
 import { minuteState, hourSelector } from "../atom/trello";
 import { Title } from "../components/Common";
+import { newTodoState } from "../atom/todo";
 
 const Wrapper = styled.div`
   background-color: ${(props) => props.theme.textColor};
@@ -45,11 +46,10 @@ const BoardTitle = styled(Title)`
   margin: 0 auto 5px auto;
 `;
 
-const todos = ["a", "b", "c", "d", "e"];
-
 function Trello() {
   const [minutes, setMinutes] = useRecoilState(minuteState);
   const [hours, setHours] = useRecoilState(hourSelector);
+  const [todos, setTodos] = useRecoilState(newTodoState);
   const onMinutesChange = (event: React.FormEvent<HTMLInputElement>) => {
     setMinutes(+event.currentTarget.value);
   };
@@ -57,8 +57,12 @@ function Trello() {
     setHours(+event.currentTarget.value);
   };
 
-  //  드래그가 완료되고 어떻게 할지 지정을 하지 않았기 때문에 드래그를 해도 원상태로 돌아간다
-  const onDragEnd = () => {};
+  const onDragEnd = ({ destination, source }: DropResult) => {
+    // 어떤일이 일어났는지에 대한 정보로 많은 argument를 준다
+    // Draggable의 draggableId이며
+    // Draggable컴포넌트가 어디로 드래그 되었는지 index나 Droppable의 draggableId를 알려준다
+    // source는 시작점 destination 도착지
+  };
   return (
     <div>
       <input type="number" placeholder="Minutes" value={minutes} onChange={onMinutesChange} />
@@ -71,7 +75,9 @@ function Trello() {
                 <Board ref={magic.innerRef} {...magic.droppableProps}>
                   <BoardTitle size={15}>Board</BoardTitle>
                   {todos.map((todo, index) => (
-                    <Draggable draggableId={todo} index={index}>
+                    // draggableId: 현재 내가 드래그한 요소를 찾을때 활용
+                    // 따라서 값을 넣어주는것이 좋다
+                    <Draggable draggableId={todo} index={index} key={index}>
                       {(magic) => (
                         <Card ref={magic.innerRef} {...magic.draggableProps} {...magic.dragHandleProps}>
                           {todo}
@@ -79,8 +85,6 @@ function Trello() {
                       )}
                     </Draggable>
                   ))}
-                  {/* placeholder는 droppable이 끝날때 두는 무언가라서 사이즈가 이상하게 변하지 않을거라사이즈가 변하는 board의 끝에서 magic.placeholder을 두면 된다
-                  기존의 board사이즈를 유지시킴: 없으면 board사이즈 줄어듬 */}
                   {magic.placeholder}
                 </Board>
               )}

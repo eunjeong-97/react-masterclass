@@ -34,3 +34,8 @@ export const todoSelector = selector({
     return todos.filter((todo) => todo.category === category);
   },
 });
+
+export const newTodoState = atom({
+  key: "newTodo",
+  default: ["a", "b", "c", "d", "e"],
+});
