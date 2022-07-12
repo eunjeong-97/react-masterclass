@@ -5,17 +5,28 @@ export const minuteState = atom({
   default: 0,
 });
 
+interface ITodostate {
+  // string으로서 property와 string[] 타입의 array로 이루어져있다
+  [key: string]: string[];
+}
+
 export const hourSelector = selector<number>({
   key: "hours",
   get: ({ get }) => {
     const minutes = get(minuteState);
     return minutes / 60;
   },
-  // set은 수정하고 싶은 recoil atom을 set하는것을 도와준다
-  // 두번째로 들어올 값인 newValue는 atom의 변경된값을 나타낸다
   set: ({ set }, newValue) => {
-    console.log(newValue); // 변경된 hoursSelector
     const minutes = Number(newValue) * 60;
-    set(minuteState, minutes); // minuteState값을 minutes로 변경시킨다
+    set(minuteState, minutes);
+  },
+});
+
+export const todoState = atom<ITodostate>({
+  key: "todo",
+  default: {
+    todo: ["a", "b", "c", "d", "e"],
+    doing: [],
+    done: [],
   },
 });
