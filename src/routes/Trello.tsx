@@ -1,8 +1,51 @@
 import React from "react";
 import { useRecoilState } from "recoil";
+import styled from "styled-components";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 import { minuteState, hourSelector } from "../atom/trello";
+import { Title } from "../components/Common";
+
+const Wrapper = styled.div`
+  background-color: ${(props) => props.theme.textColor};
+  width: 80%;
+  height: 50vh;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Boards = styled.div`
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 30px 10px 10px 10px;
+  gap: 10px;
+`;
+
+const Board = styled.div`
+  width: 100%;
+  background-color: ${(props) => props.theme.boardColor};
+  border-radius: 5px;
+  padding: 10px;
+`;
+
+const Card = styled.div`
+  background-color: white;
+  width: 80%;
+  margin: 0 auto;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+`;
+
+const BoardTitle = styled(Title)`
+  width: 80%;
+  margin: 0 auto 5px auto;
+`;
+
+const todos = ["a", "b", "c", "d", "e"];
 
 function Trello() {
   const [minutes, setMinutes] = useRecoilState(minuteState);
@@ -21,38 +64,29 @@ function Trello() {
       <input type="number" placeholder="Minutes" value={minutes} onChange={onMinutesChange} />
       <input type="number" placeholder="Hours" value={hours} onChange={onHoursChange} />
       <DragDropContext onDragEnd={onDragEnd}>
-        <div>
-          <Droppable droppableId="one">
-            {(magic) => (
-              <ul ref={magic.innerRef} {...magic.droppableProps}>
-                <Draggable draggableId="first" index={0}>
-                  {/* Draggable컴포넌트가 provided props에서 제공하는
-                        draggableProps: 만약 요소가 기본적으로 드래그 되기를 원한다면 draggableProps를 사용하면 된다(요소 전체를 드래그하는것을 의미한다)
-                        dragHandleProps: 원하는곳 어디에서든지 카드를 집어서 드래그 할 수 있지만 때때로 코너에만 드래그할 수 있게 하고 싶은경우 Handle을 사용한다
-                        만약 유저를 하여금 li를 어떠한 위치에서든지 드래그해서 옮기도록 하고 싶다면 li에 draggableProps와 dragHandleProps를 넣어주면 된다
-                    */}
-                  {(magic) => (
-                    <li ref={magic.innerRef} {...magic.draggableProps}>
-                      {/* dragHandleProps를 주면 li가 핸들링하는데에 trigger가 된다는 걸 의미한다 
-                            즉 ✅ 버튼만 누를 수 있음
-                        */}
-                      <span {...magic.dragHandleProps}>✅</span>
-                      First
-                    </li>
-                  )}
-                </Draggable>
-                <Draggable draggableId="second" index={1}>
-                  {(magic) => (
-                    // Second 글씨자체를 드래그할 수 있음
-                    <li ref={magic.innerRef} {...magic.draggableProps} {...magic.dragHandleProps}>
-                      Second
-                    </li>
-                  )}
-                </Draggable>
-              </ul>
-            )}
-          </Droppable>
-        </div>
+        <Wrapper>
+          <Boards>
+            <Droppable droppableId="one">
+              {(magic) => (
+                <Board ref={magic.innerRef} {...magic.droppableProps}>
+                  <BoardTitle size={15}>Board</BoardTitle>
+                  {todos.map((todo, index) => (
+                    <Draggable draggableId={todo} index={index}>
+                      {(magic) => (
+                        <Card ref={magic.innerRef} {...magic.draggableProps} {...magic.dragHandleProps}>
+                          {todo}
+                        </Card>
+                      )}
+                    </Draggable>
+                  ))}
+                  {/* placeholder는 droppable이 끝날때 두는 무언가라서 사이즈가 이상하게 변하지 않을거라사이즈가 변하는 board의 끝에서 magic.placeholder을 두면 된다
+                  기존의 board사이즈를 유지시킴: 없으면 board사이즈 줄어듬 */}
+                  {magic.placeholder}
+                </Board>
+              )}
+            </Droppable>
+          </Boards>
+        </Wrapper>
       </DragDropContext>
     </div>
   );

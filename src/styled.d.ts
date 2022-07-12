@@ -22,5 +22,6 @@ declare module "styled-components" {
     titleColor: string;
     btnTextColor: string;
     accentColor: string;
+    boardColor: string;
   }
 }

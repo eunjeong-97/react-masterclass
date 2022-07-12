@@ -22,6 +22,7 @@ export const dark: DefaultTheme = {
   titleColor: color.blue.normal,
   btnTextColor: color.blue.light,
   accentColor: color.purple,
+  boardColor: color.gray.normal,
 };
 
 export const light: DefaultTheme = {
@@ -31,4 +32,5 @@ export const light: DefaultTheme = {
   titleColor: color.gray.dark,
   btnTextColor: color.gray.dark,
   accentColor: color.blue.dark,
+  boardColor: color.gray.normal,
 };
